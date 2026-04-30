@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.algorithmx.q_base.core_ai"
+    namespace = "com.algorithmx.androidmodules.coreai"
     compileSdk = 35
 
     defaultConfig {
@@ -67,9 +67,9 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
+    // Optional Room-backed usage logging. Consumers only inherit Room if they add it themselves.
+    compileOnly(libs.androidx.room.runtime)
+    compileOnly(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     // AI
