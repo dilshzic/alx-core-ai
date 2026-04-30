@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    id("maven-publish")
 }
 
 android {
@@ -50,6 +51,26 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.algorithmx" // Replace with your GitHub handle
+                artifactId = "core-ai"
+                version = "1.0.0"
+            }
+        }
+    }
 }
 
 dependencies {
@@ -67,7 +88,7 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    // Optional Room-backed usage logging. Consumers only inherit Room if they add it themselves.
+    // Optional Room-backed usage logging
     compileOnly(libs.androidx.room.runtime)
     compileOnly(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
