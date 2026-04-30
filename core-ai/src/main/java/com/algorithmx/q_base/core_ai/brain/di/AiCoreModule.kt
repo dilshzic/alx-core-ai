@@ -2,7 +2,6 @@ package com.algorithmx.q_base.core_ai.brain.di
 
 import com.algorithmx.q_base.core_ai.brain.AiBrainManager
 import com.algorithmx.q_base.core_ai.brain.BrainDataStoreManager
-import com.algorithmx.q_base.core_ai.brain.CommonAiService
 import com.algorithmx.q_base.core_ai.brain.AiUsageLogger
 import com.algorithmx.q_base.core_ai.brain.BrainConfigProvider
 import dagger.Module
@@ -25,9 +24,4 @@ object AiCoreModule {
         return AiBrainManager(dataStoreManager, usageLogger, configProvider)
     }
 
-    @Provides
-    @Singleton
-    fun provideCommonAiService(aiBrainManager: AiBrainManager): CommonAiService {
-        return CommonAiService(aiBrainManager)
-    }
 }

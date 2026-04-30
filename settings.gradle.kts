@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "alx-core-ai"
 include(":app")
+include(":core-ai")
  

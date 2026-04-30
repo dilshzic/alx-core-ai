@@ -15,7 +15,14 @@ import org.json.JSONObject
 class OpenAiCompatibleBrainImpl(
     private val apiKey: String,
     private val modelName: String,
-    private val baseUrl: String
+    private val baseUrl: String,
+    private val systemInstruction: String? = null,
+    private val temperature: Double? = null,
+    private val maxCompletionTokens: Int? = null,
+    private val topP: Double? = null,
+    private val reasoningEffort: String? = null,
+    private val stopSequences: List<String>? = null,
+    private val tools: JSONArray? = null
 ) : AiBrain {
 
     private val client = OkHttpClient()
@@ -25,17 +32,39 @@ class OpenAiCompatibleBrainImpl(
         try {
             val jsonPayload = JSONObject().apply {
                 put("model", modelName)
+                
+                temperature?.let { put("temperature", it) }
+                maxCompletionTokens?.let { put("max_completion_tokens", it) }
+                topP?.let { put("top_p", it) }
+                reasoningEffort?.let { put("reasoning_effort", it) }
+                
+                stopSequences?.let { 
+                    put("stop", JSONArray(it))
+                }
+                
+                tools?.let { put("tools", it) }
+
                 if (isJsonMode) {
                     put("response_format", JSONObject().apply {
                         put("type", "json_object")
                     })
                 }
-                put("messages", JSONArray().apply {
-                    put(JSONObject().apply {
-                        put("role", "user")
-                        put("content", prompt)
+                
+                val messagesArray = JSONArray()
+                
+                if (systemInstruction != null) {
+                    messagesArray.put(JSONObject().apply {
+                        put("role", "system")
+                        put("content", systemInstruction)
                     })
+                }
+                
+                messagesArray.put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", prompt)
                 })
+                
+                put("messages", messagesArray)
             }
 
             val request = Request.Builder()
@@ -45,16 +74,17 @@ class OpenAiCompatibleBrainImpl(
                 .build()
 
             client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@withContext Result.failure(Exception("Empty response body"))
+                
                 if (!response.isSuccessful) {
-                    return@withContext Result.failure(Exception("HTTP Error: ${response.code}"))
+                    return@withContext Result.failure(Exception("HTTP Error: ${response.code}\nBody: $body"))
                 }
 
-                val body = response.body?.string() ?: return@withContext Result.failure(Exception("Empty response body"))
                 val jsonResponse = JSONObject(body)
                 val content = jsonResponse.getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("message")
-                    .getString("content")
+                    .optString("content", "")
 
                 Result.success(content)
             }

@@ -23,14 +23,6 @@ data class BrainConfig(
     val category: BrainCategory = BrainCategory.TEXT_TO_TEXT
 )
 
-@Serializable
-data class TaskConfig(
-    val modelName: String,
-    val fallbackModelName: String? = null,
-    val systemPrompt: String,
-    val temperature: Float = 0.7f
-)
-
 data class StoredBrainConfig(
     val provider: BrainProvider,
     val modelName: String,
@@ -40,6 +32,5 @@ data class StoredBrainConfig(
     val category: BrainCategory = BrainCategory.TEXT_TO_TEXT,
     val themeMode: String = "SYSTEM",
     val notificationsEnabled: Boolean = true,
-    val isMasterAiFreeze: Boolean = false,
-    val taskConfigs: Map<BrainTask, TaskConfig> = emptyMap()
+    val isMasterAiFreeze: Boolean = false
 )
