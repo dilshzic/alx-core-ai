@@ -67,7 +67,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.algorithmx" // Replace with your GitHub handle
                 artifactId = "core-ai"
-                version = "1.0.0"
+                version = "1.0.2"
             }
         }
     }
@@ -88,10 +88,7 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    // Optional Room-backed usage logging
-    compileOnly(libs.androidx.room.runtime)
-    compileOnly(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+
 
     // AI
     implementation(libs.generativeai)

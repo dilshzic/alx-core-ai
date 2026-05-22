@@ -11,13 +11,3 @@ interface AiUsageLogger {
         errorMessage: String? = null
     )
 }
-
-object NoOpAiUsageLogger : AiUsageLogger {
-    override suspend fun logUsage(
-        provider: BrainProvider,
-        modelUsed: String,
-        tokensEstimated: Int,
-        isSuccess: Boolean,
-        errorMessage: String?
-    ) = Unit
-}
